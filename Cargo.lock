@@ -240,7 +240,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "docker-composer-health-check"
+name = "distroless-hc"
 version = "0.1.0"
 dependencies = [
  "anyhow",

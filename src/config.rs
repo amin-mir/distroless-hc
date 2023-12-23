@@ -49,8 +49,10 @@ mod tests {
 
     #[test]
     fn test_config_from_env_hosts_required() {
-        let config = Config::from_env();
-        assert!(config.is_err());
+        temp_env::with_var("HOSTS", None::<&str>, || {
+            let config = Config::from_env();
+            assert!(config.is_err());
+        });
     }
 
     #[test]
