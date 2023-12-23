@@ -43,7 +43,7 @@ To solve this, you can use distroless-hc image and add a `wait-services` contain
 
 ```
 wait-services:
-  build: amin-mir/distroless-hc
+  build: malooooch/distroless-hc
   environment:
     HOSTS: >
       http://server1:3030/healthcheck,
@@ -65,5 +65,8 @@ depends_on:
 ```
 
 ### Image Link
-Check out the image on [dockerhub](https://hub.docker.com/r/malooooch/distroless-hc)
+Check out the image on [dockerhub](https://hub.docker.com/r/malooooch/distroless-hc).
 
+```
+docker pull malooooch/distroless-hc
+```
