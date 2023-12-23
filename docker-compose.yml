@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  hc:
+    build: .
+    environment:
+      HOSTS: >
+        http://test-server1:3030/healthcheck,
+        http://test-server2:3031/healthcheck,
+        http://test-server3:3032/healthcheck
+      RETRIES: 10
+    depends_on:
+      - test-server1
+      - test-server2
+      - test-server3
+
+  test-server1:
+    build: 
+      context: .
+      dockerfile: Dockerfile-testserver
+    expose:
+      - "3030"
+    ports:
+      - "3030:3030"
+    environment:
+      - PORT=3030
+      - FAIL_COUNT=4
+    # Can't use a typical healthcheck for distroless containers.
+    # The following won't work:
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+  test-server2:
+    build: 
+      context: .
+      dockerfile: Dockerfile-testserver
+    # expose:
+    #   - "3030"
+    environment:
+      - PORT=3031
+      - FAIL_COUNT=9
+
+  test-server3:
+    build: 
+      context: .
+      dockerfile: Dockerfile-testserver
+    expose:
+      - "3032"
+    environment:
+      - PORT=3032

@@ -1,0 +1,25 @@
+[package]
+name = "distroless-hc"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.75"
+reqwest = { version = "0.11" }
+tokio = { version = "1", features = ["full"] }
+futures = "0.3.29"
+warp = "0.3.6"
+
+[dev-dependencies]
+wiremock = "0.5"
+temp-env = "0.3.6"
+
+[[bin]]
+name = "hc"
+path = "src/main.rs"
+
+[[bin]]
+name = "test-server"
+path = "src/test_server/server.rs"
