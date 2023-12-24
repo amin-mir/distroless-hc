@@ -51,8 +51,9 @@ wait-services:
       http://server3:3032/healthcheck
     RETRIES: 4
   depends_on:
-    server1:
-      condition: service_healthy
+    - server1
+    - server2
+    - server3
 ```
 
 Simply list the url of the services you need up and running before dependent services under HOSTS environment variable.
@@ -60,8 +61,8 @@ Then in your top-level services you can wait until `wait-services` container exi
 
 ```yml
 depends_on:
-  server1:
-    condition: service_healthy
+  wait-services:
+    condition: service_completed_successfully
 ```
 
 ### Configuration
