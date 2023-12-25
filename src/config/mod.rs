@@ -4,10 +4,11 @@ use std::time::Duration;
 use anyhow::{Context, Result};
 
 mod dur;
+use dur::TimeUnit;
 
-const DEFAULT_TIMEOUT: &str = "1000";
+const DEFAULT_TIMEOUT: &str = "1s";
 const DEFAULT_RETRIES: &str = "5";
-const DEFAULT_INTERVAL: &str = "1000";
+const DEFAULT_INTERVAL: &str = "1s";
 
 #[derive(Debug)]
 pub struct Config {
@@ -21,7 +22,7 @@ impl Config {
     pub fn from_env() -> Result<Self> {
         let hosts = env::var("HOSTS").context("Missing HOSTS environment variable")?;
 
-        let timeout = env::var("TIMEOUT")
+        let timeout: TimeUnit = env::var("TIMEOUT")
             .unwrap_or(DEFAULT_TIMEOUT.to_string())
             .parse()
             .context("TIMEOUT is not a valid number")?;
@@ -31,16 +32,16 @@ impl Config {
             .parse()
             .context("RETRIES is not a valid number")?;
 
-        let interval = env::var("INTERVAL")
+        let interval: TimeUnit = env::var("TIMEOUT")
             .unwrap_or(DEFAULT_INTERVAL.to_string())
             .parse()
             .context("INTERVAL is not a valid number")?;
 
         Ok(Config {
             hosts: hosts.split(',').map(|s| s.trim().to_string()).collect(),
-            timeout: Duration::from_millis(timeout),
+            timeout: timeout.into(),
             retries,
-            interval: Duration::from_millis(interval),
+            interval: interval.into(),
         })
     }
 }
