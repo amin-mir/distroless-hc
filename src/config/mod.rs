@@ -3,9 +3,12 @@ use std::time::Duration;
 
 use anyhow::{Context, Result};
 
-const DEFAULT_TIMEOUT: &str = "1000";
+mod dur;
+use dur::TimeUnit;
+
+const DEFAULT_TIMEOUT: &str = "1s";
 const DEFAULT_RETRIES: &str = "5";
-const DEFAULT_INTERVAL: &str = "1000";
+const DEFAULT_INTERVAL: &str = "1s";
 
 #[derive(Debug)]
 pub struct Config {
@@ -19,7 +22,7 @@ impl Config {
     pub fn from_env() -> Result<Self> {
         let hosts = env::var("HOSTS").context("Missing HOSTS environment variable")?;
 
-        let timeout = env::var("TIMEOUT")
+        let timeout: TimeUnit = env::var("TIMEOUT")
             .unwrap_or(DEFAULT_TIMEOUT.to_string())
             .parse()
             .context("TIMEOUT is not a valid number")?;
@@ -29,16 +32,16 @@ impl Config {
             .parse()
             .context("RETRIES is not a valid number")?;
 
-        let interval = env::var("INTERVAL")
+        let interval: TimeUnit = env::var("INTERVAL")
             .unwrap_or(DEFAULT_INTERVAL.to_string())
             .parse()
             .context("INTERVAL is not a valid number")?;
 
         Ok(Config {
             hosts: hosts.split(',').map(|s| s.trim().to_string()).collect(),
-            timeout: Duration::from_millis(timeout),
+            timeout: timeout.into(),
             retries,
-            interval: Duration::from_millis(interval),
+            interval: interval.into(),
         })
     }
 }
@@ -71,9 +74,9 @@ mod tests {
         temp_env::with_vars(
             [
                 ("HOSTS", Some(" host1, host2, host3")),
-                ("TIMEOUT", Some("500")),
+                ("TIMEOUT", Some("500ms")),
                 ("RETRIES", Some("3")),
-                ("INTERVAL", Some("1500")),
+                ("INTERVAL", Some("2s")),
             ],
             || {
                 let config = Config::from_env().unwrap();
@@ -87,7 +90,7 @@ mod tests {
                 );
                 assert_eq!(config.timeout, Duration::from_millis(500));
                 assert_eq!(config.retries, 3);
-                assert_eq!(config.interval, Duration::from_millis(1500));
+                assert_eq!(config.interval, Duration::from_secs(2));
             },
         );
     }
