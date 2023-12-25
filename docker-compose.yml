@@ -9,6 +9,8 @@ services:
         http://test-server2:3031/healthcheck,
         http://test-server3:3032/healthcheck
       RETRIES: 10
+      INTERVAL: 2s
+      TIMEOUT: 3s
     depends_on:
       - test-server1
       - test-server2
@@ -21,6 +23,7 @@ services:
     environment:
       - PORT=3030
       - FAIL_COUNT=4
+      - RESPONSE_DELAY=2500
     # Can't use a typical healthcheck for distroless containers.
     # The following won't work:
     # healthcheck:
@@ -35,6 +38,7 @@ services:
       dockerfile: Dockerfile-testserver
     environment:
       - PORT=3031
+      - RESPONSE_DELAY=1500
       - FAIL_COUNT=9
 
   test-server3:
@@ -43,3 +47,5 @@ services:
       dockerfile: Dockerfile-testserver
     environment:
       - PORT=3032
+      - RESPONSE_DELAY=4000
+      - FAIL_COUNT=5

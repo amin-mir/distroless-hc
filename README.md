@@ -69,9 +69,9 @@ depends_on:
 You can configure the health checker with the following environment variables:
 
 * `HOSTS`: A comma-separated list of URLs.
-* `TIMEOUT`: The timeout duration in milliseconds for each HTTP GET request e.g. 2000 represents a 2-second timeout.
+* `TIMEOUT`: The timeout duration for each HTTP GET request e.g. `500ms`, `1s`.
 * `RETRIES`: The maximum number of HTTP requests sent to each URL before it is marked as unhealthy.
-* `INTERVAL`: The time interval in milliseconds between consecutive HTTP requests to each URL. Example: 1000 for 1 second.
+* `INTERVAL`: The time interval in milliseconds between consecutive HTTP requests to each URL e.g. `2s`.
 
 ### Image Link
 Check out the image on [dockerhub](https://hub.docker.com/r/malooooch/distroless-hc).
