@@ -1,4 +1,7 @@
 ## Health Check For Distroless Images
+
+I've also published a story on Medium explaining the motivation for creating this image which you can have a look [here](https://medium.com/@aminmir326/health-checks-for-distroless-containers-a2180c4c4fcf).
+
 This project provides a lightweight solution for health checking Docker containers built from distroless base images or images lacking essential utilities
 like `wget` and `curl`. 
 
