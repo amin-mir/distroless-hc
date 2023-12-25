@@ -3,6 +3,8 @@ use std::time::Duration;
 
 use anyhow::{Context, Result};
 
+mod dur;
+
 const DEFAULT_TIMEOUT: &str = "1000";
 const DEFAULT_RETRIES: &str = "5";
 const DEFAULT_INTERVAL: &str = "1000";
