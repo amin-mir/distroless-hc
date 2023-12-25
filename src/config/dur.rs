@@ -2,6 +2,7 @@ use std::num::ParseIntError;
 use std::str::FromStr;
 use std::time::Duration;
 
+#[derive(Debug)]
 pub enum TimeUnit {
     Nanos(u64),
     Micros(u64),
@@ -45,7 +46,7 @@ impl FromStr for TimeUnit {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ParseDurError {
     MissingUnit,
     InvalidNum(ParseIntError),
@@ -68,4 +69,43 @@ impl From<ParseIntError> for ParseDurError {
     fn from(err: ParseIntError) -> Self {
         ParseDurError::InvalidNum(err)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_missing_unit() {
+        let error = "2000".parse::<TimeUnit>().unwrap_err();
+        assert_eq!(ParseDurError::MissingUnit, error);
+    }
+
+    #[test]
+    fn test_missing_numeric_part() {
+        match "ms".parse::<TimeUnit>() {
+            Err(ParseDurError::InvalidNum(_)) => (),
+            _ => panic!("Expected InvalidNum error"),
+        };
+    }
+
+    macro_rules! parse_tests {
+        ($($name:ident: $dur_str:expr, $expected:expr);+) => {
+            $(
+                #[test]
+                fn $name() {
+                    let dur: TimeUnit = $dur_str.parse().unwrap();
+                    assert_eq!($expected, dur.into());
+                }
+            )+
+        };
+    }
+
+    parse_tests!(
+        test_parse_ns: "1500ns", Duration::from_nanos(1500);
+        test_parse_us: "500us", Duration::from_micros(500);
+        test_parse_ms: "200ms", Duration::from_millis(200);
+        test_parse_s: "2s", Duration::from_secs(2);
+        test_parse_m: "4m", Duration::from_secs(4 * 60)
+    );
 }

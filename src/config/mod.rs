@@ -32,7 +32,7 @@ impl Config {
             .parse()
             .context("RETRIES is not a valid number")?;
 
-        let interval: TimeUnit = env::var("TIMEOUT")
+        let interval: TimeUnit = env::var("INTERVAL")
             .unwrap_or(DEFAULT_INTERVAL.to_string())
             .parse()
             .context("INTERVAL is not a valid number")?;
@@ -74,9 +74,9 @@ mod tests {
         temp_env::with_vars(
             [
                 ("HOSTS", Some(" host1, host2, host3")),
-                ("TIMEOUT", Some("500")),
+                ("TIMEOUT", Some("500ms")),
                 ("RETRIES", Some("3")),
-                ("INTERVAL", Some("1500")),
+                ("INTERVAL", Some("2s")),
             ],
             || {
                 let config = Config::from_env().unwrap();
@@ -90,7 +90,7 @@ mod tests {
                 );
                 assert_eq!(config.timeout, Duration::from_millis(500));
                 assert_eq!(config.retries, 3);
-                assert_eq!(config.interval, Duration::from_millis(1500));
+                assert_eq!(config.interval, Duration::from_secs(2));
             },
         );
     }
